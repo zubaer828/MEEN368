@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 from pypdf import PdfReader
+from pathlib import Path
 
 st.set_page_config(
     page_title="Gusset Plate Design Coach",
@@ -9,8 +10,9 @@ st.set_page_config(
 )
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+BASE_DIR = Path(__file__).parent
 
-SOLUTION_FILE = "Solution.pdf"
+SOLUTION_FILE = BASE_DIR / "Solution.pdf"
 UNLOCK_COUNT = 10
 
 SYSTEM_PROMPT = """
@@ -68,7 +70,7 @@ with main_tab:
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.image("GussetPlate.png", caption="F63-5 Gusset Plate")
+        st.image(BASE_DIR / "GussetPlate.png", caption="F63-5 Gusset Plate")
 
     with col2:
         student_input = st.text_area(
@@ -121,7 +123,7 @@ with solution_tab:
         st.markdown("### Ask AI to explain the instructor solution")
 
         try:
-            reader = PdfReader(SOLUTION_FILE)
+            reader = PdfReader(str(SOLUTION_FILE))
             solution_text = ""
             for page in reader.pages:
                 page_text = page.extract_text()
