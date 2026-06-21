@@ -465,27 +465,6 @@ with compute_tab:
     m3.metric("Se", f"{res['Se_ksi']:.2f} ksi")
     m4.metric("nd", f"{res['nd']:.2f}")
 
-    st.markdown("### Calculation trace")
-    trace = {
-        "R1 (kip)": res["R1_kip"],
-        "R2 (kip)": res["R2_kip"],
-        "M at critical shoulder (kip-in)": res["M_kip_in"],
-        "sqrt(a) (sqrt(in))": res["sqrta"],
-        "fillet radius r (in)": res["r_in"],
-        "Kf": res["Kf"],
-        "ka": res["ka"],
-        "kb": res["kb"],
-        "Se prime (ksi)": res["Se_prime_ksi"],
-        "Se (ksi)": res["Se_ksi"],
-        "sigma_aN at target life (ksi)": res["sigma_aN_ksi"],
-        "predicted life at current d (cycles)": res["N_pred"],
-    }
-    st.dataframe(
-        [{"Quantity": k, "Value": v} for k, v in trace.items()],
-        hide_index=True,
-        use_container_width=True,
-    )
-
     st.markdown("### Diameter sweep for verification")
     d_sweep, sw = sweep_diameters(inp)
 
@@ -517,6 +496,27 @@ with compute_tab:
 - The fatigue stress concentration factor Kf also changes with d when r/d is fixed, because the fillet radius r changes.
 - The finite-life design factor nd and infinite-life fatigue factor nf do not answer exactly the same design question.
 """
+    )
+
+    st.markdown("### Calculation trace")
+    trace = {
+        "R1 (kip)": res["R1_kip"],
+        "R2 (kip)": res["R2_kip"],
+        "M at critical shoulder (kip-in)": res["M_kip_in"],
+        "sqrt(a) (sqrt(in))": res["sqrta"],
+        "fillet radius r (in)": res["r_in"],
+        "Kf": res["Kf"],
+        "ka": res["ka"],
+        "kb": res["kb"],
+        "Se prime (ksi)": res["Se_prime_ksi"],
+        "Se (ksi)": res["Se_ksi"],
+        "sigma_aN at target life (ksi)": res["sigma_aN_ksi"],
+        "predicted life at current d (cycles)": res["N_pred"],
+    }
+    st.dataframe(
+        [{"Quantity": k, "Value": v} for k, v in trace.items()],
+        hide_index=True,
+        use_container_width=True,
     )
 
 # -----------------------------------------------------------------------------
