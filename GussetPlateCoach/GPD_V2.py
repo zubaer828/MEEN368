@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+from google import genai
 from pypdf import PdfReader
 from pathlib import Path
 
@@ -9,11 +9,13 @@ st.set_page_config(
     layout="wide"
 )
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+
 BASE_DIR = Path(__file__).parent
 
 SOLUTION_FILE = BASE_DIR / "Solution.pdf"
 UNLOCK_COUNT = 10
+GEMINI_MODEL = "gemini-3.5-flash"
 
 SYSTEM_PROMPT = """
 You are a Gusset Plate Mechanics Coach implementing cognitive apprenticeship.
@@ -54,6 +56,15 @@ examples = {
     "Load path question": "How does the load flow through the gusset plate?"
 }
 
+def ask_gemini(system_prompt, user_input):
+    response = client.interactions.create(
+        model=GEMINI_MODEL,
+        system_instruction=system_prompt,
+        input=user_input,
+        store=False
+    )
+    return response.output_text
+
 if "coach_count" not in st.session_state:
     st.session_state.coach_count = 0
 
@@ -86,14 +97,12 @@ with main_tab:
             st.session_state.coach_count += 1
 
             with st.spinner("Thinking like a mechanics coach..."):
-                response = client.responses.create(
-                    model="gpt-4o-mini",
-                    instructions=SYSTEM_PROMPT,
-                    input=student_input
-                )
-
-            st.markdown("## AI-Guided Prompt")
-            st.success(response.output_text)
+                try:
+                    answer = ask_gemini(SYSTEM_PROMPT, student_input)
+                    st.markdown("## AI-Guided Prompt")
+                    st.success(answer)
+                except Exception as e:
+                    st.error(f"Gemini API error: {e}")
 
     if st.session_state.coach_count < UNLOCK_COUNT:
         remaining = UNLOCK_COUNT - st.session_state.coach_count
@@ -166,14 +175,12 @@ Student question:
 """
 
             with st.spinner("Explaining the instructor solution..."):
-                explanation = client.responses.create(
-                    model="gpt-4o-mini",
-                    instructions=SOLUTION_EXPLAINER_PROMPT,
-                    input=prompt
-                )
-
-            st.markdown("## Explanation")
-            st.info(explanation.output_text)
+                try:
+                    explanation = ask_gemini(SOLUTION_EXPLAINER_PROMPT, prompt)
+                    st.markdown("## Explanation")
+                    st.info(explanation)
+                except Exception as e:
+                    st.error(f"Gemini API error: {e}")
 
 with concept_tab:
     tab1, tab2, tab3 = st.tabs(["Strength", "Stability", "Stiffness"])
