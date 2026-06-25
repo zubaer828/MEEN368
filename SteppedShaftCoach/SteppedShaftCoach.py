@@ -1,20 +1,8 @@
 """
 TAMU MEEN 368: Stepped Shaft Fatigue Design Coach
 
-Streamlit app that integrates:
-1) computation-first stepped shaft fatigue analysis,
-2) JupyterLite-ready Python code cells,
-3) AI-guided conceptual coaching, and
-4) delayed instructor-solution explanation.
-
-Place this file in the same folder as:
-- L19_FatigueExample2.pdf       (instructor solution)
-- FatigueSteppedShaft.ipynb     (optional notebook download)
-
-Run locally:
-    streamlit run SteppedShaftCoach.py
-
-For Streamlit Community Cloud, add OPENAI_API_KEY in app secrets.
+For Streamlit Community Cloud, add this in secrets:
+GEMINI_API_KEY = "your-gemini-api-key"
 """
 
 from __future__ import annotations
@@ -28,9 +16,11 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 try:
-    from openai import OpenAI
-except Exception:  # app can still run in computation-only mode
-    OpenAI = None
+    from google import genai
+    from google.genai import types
+except Exception:
+    genai = None
+    types = None
 
 try:
     from pypdf import PdfReader
@@ -38,9 +28,6 @@ except Exception:
     PdfReader = None
 
 
-# -----------------------------------------------------------------------------
-# Page setup and files
-# -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Stepped Shaft Fatigue Design Coach",
     page_icon="🧠",
@@ -51,11 +38,9 @@ BASE_DIR = Path(__file__).parent
 SOLUTION_FILE = BASE_DIR / "L19_FatigueExample2.pdf"
 NOTEBOOK_FILE = BASE_DIR / "FatigueSteppedShaft.ipynb"
 UNLOCK_COUNT = 8
+GEMINI_MODEL = "gemini-2.5-flash"
 
 
-# -----------------------------------------------------------------------------
-# AI prompts
-# -----------------------------------------------------------------------------
 SYSTEM_PROMPT = """
 You are a MEEN 368 Stepped Shaft Fatigue Design Coach implementing cognitive apprenticeship.
 
@@ -107,9 +92,6 @@ EXAMPLE_PROMPTS = {
 }
 
 
-# -----------------------------------------------------------------------------
-# Mechanics model
-# -----------------------------------------------------------------------------
 @dataclass
 class ShaftInputs:
     F_kip: float = 8.0
@@ -135,7 +117,6 @@ class ShaftInputs:
 
 
 def sqrta_for_steel(Sut_ksi: float) -> float:
-    """Shigley-style notch-sensitivity material parameter sqrt(a), in sqrt(in)."""
     return 0.246 - 3.08e-3 * Sut_ksi + 1.51e-5 * Sut_ksi**2 - 2.67e-8 * Sut_ksi**3
 
 
@@ -147,7 +128,10 @@ def compute_shaft(inp: ShaftInputs) -> Dict[str, float]:
 
     r_in = inp.r_over_d * inp.d_in
     sqrta = sqrta_for_steel(inp.Sut_ksi)
-    Kf = 1.0 + (inp.Kt_bending - 1.0) / (1.0 + sqrta / np.sqrt(max(r_in, 1e-12)))
+
+    Kf = 1.0 + (inp.Kt_bending - 1.0) / (
+        1.0 + sqrta / np.sqrt(max(r_in, 1e-12))
+    )
 
     sigma_nom_ksi = 32.0 * M_kip_in / (np.pi * inp.d_in**3)
     sigma_max_ksi = Kf * sigma_nom_ksi
@@ -165,7 +149,10 @@ def compute_shaft(inp: ShaftInputs) -> Dict[str, float]:
     else:
         nf = 1.0 / (sigma_a_ksi / Se_ksi + sigma_m_ksi / inp.Sut_ksi)
 
-    ny = inp.Sy_ksi / max(sigma_max_ksi, sigma_a_ksi + max(sigma_m_ksi, 0.0))
+    ny = inp.Sy_ksi / max(
+        sigma_max_ksi,
+        sigma_a_ksi + max(sigma_m_ksi, 0.0)
+    )
 
     N_target = inp.rpm * 60.0 * inp.life_hours
     f = 1.06 - 2.8e-3 * inp.Sut_ksi + 6.9e-6 * inp.Sut_ksi**2
@@ -207,11 +194,13 @@ def compute_shaft(inp: ShaftInputs) -> Dict[str, float]:
 def sweep_diameters(inp: ShaftInputs, d_min=1.5, d_max=3.2, n=120) -> Tuple[np.ndarray, Dict[str, np.ndarray]]:
     ds = np.linspace(d_min, d_max, n)
     out = {"sigma_a_ksi": [], "Se_ksi": [], "nf": [], "nd": [], "ny": [], "Kf": []}
+
     for d in ds:
         temp = ShaftInputs(**{**asdict(inp), "d_in": float(d)})
         res = compute_shaft(temp)
         for key in out:
             out[key].append(res[key])
+
     return ds, {k: np.array(v) for k, v in out.items()}
 
 
@@ -219,8 +208,6 @@ def make_jupyterlite_code(inp: ShaftInputs) -> str:
     return f'''from numpy import *
 import matplotlib.pyplot as plt
 
-# Stepped shaft fatigue calculation
-# Units: kip, inch, ksi
 S_ut = {inp.Sut_ksi:.6g}
 S_y = {inp.Sy_ksi:.6g}
 F = {inp.F_kip:.6g}
@@ -250,7 +237,10 @@ sigma_m = (sigma_max + sigma_min)/2
 
 ka = {inp.ka_a:.6g}*S_ut**({inp.ka_b:.6g})
 kb = {inp.kb_a:.6g}*d**({inp.kb_b:.6g})
-kc = {inp.kc:.6g}; kd = {inp.kd:.6g}; ke = {inp.ke:.6g}
+kc = {inp.kc:.6g}
+kd = {inp.kd:.6g}
+ke = {inp.ke:.6g}
+
 Se_prime = 0.5*S_ut
 Se = ka*kb*kc*kd*ke*Se_prime
 
@@ -274,11 +264,11 @@ print(f"sigma_a = {{sigma_a:.3f}} ksi, sigma_m = {{sigma_m:.3f}} ksi")
 print(f"Se = {{Se:.3f}} ksi")
 print(f"nf = {{n_f:.3f}}, ny = {{n_y:.3f}}, nd = {{n_d:.3f}}")
 
-# Diameter sweep for verification
 D = linspace(1.5, 3.2, 120)
 nd_list = []
 nf_list = []
 siga_list = []
+
 for d_i in D:
     r_i = r_over_d*d_i
     Kf_i = 1 + (Kt - 1)/(1 + sqrta/sqrt(r_i))
@@ -288,6 +278,7 @@ for d_i in D:
     a_i = (f*S_ut)**2/Se_i
     b_i = -(1/3)*log10(f*S_ut/Se_i)
     sigaN_i = a_i*N**b_i
+
     siga_list.append(sigma_i)
     nf_list.append(Se_i/sigma_i)
     nd_list.append(sigaN_i/sigma_i)
@@ -305,41 +296,52 @@ plt.show()
 
 
 def get_client():
-    if OpenAI is None:
+    if genai is None:
         return None
     try:
-        return OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+        return genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     except Exception:
         return None
+
+
+def ask_gemini(client, system_prompt: str, user_input: str) -> str:
+    response = client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=user_input,
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=0.4,
+        ),
+    )
+    return response.text
 
 
 def extract_solution_text() -> str:
     if PdfReader is None or not SOLUTION_FILE.exists():
         return ""
+
     try:
         reader = PdfReader(str(SOLUTION_FILE))
         text = ""
+
         for page in reader.pages:
             page_text = page.extract_text()
             if page_text:
                 text += page_text + "\n"
+
         return text[:16000]
+
     except Exception:
         return ""
 
 
-# -----------------------------------------------------------------------------
-# Session state
-# -----------------------------------------------------------------------------
 if "coach_count" not in st.session_state:
     st.session_state.coach_count = 0
+
 if "last_results" not in st.session_state:
     st.session_state.last_results = None
 
 
-# -----------------------------------------------------------------------------
-# Sidebar inputs
-# -----------------------------------------------------------------------------
 st.sidebar.header("Stepped shaft parameters")
 st.sidebar.caption("Use sliders first, then ask the AI coach to interpret the computed behavior.")
 
@@ -361,6 +363,7 @@ with st.sidebar.expander("Material and fatigue inputs", expanded=True):
     ke = st.selectbox("Reliability factor ke", [1.000, 0.897, 0.868, 0.814, 0.753, 0.702], index=0)
     mean_stress = st.slider("Optional steady mean stress (ksi)", 0.0, 30.0, 0.0, 0.5)
 
+
 inp = ShaftInputs(
     F_kip=F_kip,
     L_in=L_in,
@@ -377,13 +380,11 @@ inp = ShaftInputs(
     ke=float(ke),
     mean_stress_ksi=mean_stress,
 )
+
 res = compute_shaft(inp)
 st.session_state.last_results = res
 
 
-# -----------------------------------------------------------------------------
-# Main layout
-# -----------------------------------------------------------------------------
 st.title("TAMU Mechanics: Stepped Shaft Fatigue Design Coach")
 st.caption("Close integration of JupyterLite-style computation and AI-guided learning")
 
@@ -391,9 +392,7 @@ coach_tab, compute_tab, jlite_tab, solution_tab, concept_tab = st.tabs(
     ["AI Coach", "Computation Dashboard", "JupyterLite Code", "Solution Access", "Concept Review"]
 )
 
-# -----------------------------------------------------------------------------
-# AI Coach
-# -----------------------------------------------------------------------------
+
 with coach_tab:
     st.subheader("AI-guided learning connected to current computed parameters")
     st.write(
@@ -402,6 +401,7 @@ with coach_tab:
     )
 
     left, right = st.columns([1, 1.6])
+
     with left:
         st.markdown("### Current computational evidence")
         st.metric("Alternating stress, σa", f"{res['sigma_a_ksi']:.2f} ksi")
@@ -416,19 +416,23 @@ with coach_tab:
 
     with right:
         example = st.selectbox("Example student question", list(EXAMPLE_PROMPTS.keys()))
+
         student_input = st.text_area(
             "Student reasoning or question",
             value=EXAMPLE_PROMPTS[example],
             height=140,
         )
+
         st.write(f"Coaching interactions used: **{st.session_state.coach_count}/{UNLOCK_COUNT}**")
 
         client = get_client()
+
         if client is None:
-            st.warning("AI coaching is disabled until OPENAI_API_KEY is added to Streamlit secrets.")
+            st.warning("AI coaching is disabled until GEMINI_API_KEY is added to Streamlit secrets.")
         else:
             if st.button("Coach Me", key="coach_button"):
                 st.session_state.coach_count += 1
+
                 context = f"""
 Current parameter state:
 {asdict(inp)}
@@ -439,23 +443,24 @@ Current computed results:
 Student question/reasoning:
 {student_input}
 """
+
                 with st.spinner("Thinking like a fatigue design coach..."):
-                    response = client.responses.create(
-                        model="gpt-4o-mini",
-                        instructions=SYSTEM_PROMPT,
-                        input=context,
-                    )
-                st.markdown("### AI-guided prompt")
-                st.success(response.output_text)
+                    try:
+                        answer = ask_gemini(client, SYSTEM_PROMPT, context)
+                        st.markdown("### AI-guided prompt")
+                        st.success(answer)
+                    except Exception as e:
+                        st.error(f"Gemini API error: {e}")
 
         if st.session_state.coach_count < UNLOCK_COUNT:
-            st.info(f"Complete {UNLOCK_COUNT - st.session_state.coach_count} more coaching interaction(s) to unlock the instructor solution.")
+            st.info(
+                f"Complete {UNLOCK_COUNT - st.session_state.coach_count} more coaching interaction(s) "
+                "to unlock the instructor solution."
+            )
         else:
             st.success("Instructor solution is now unlocked. Go to the Solution Access tab.")
 
-# -----------------------------------------------------------------------------
-# Computation Dashboard
-# -----------------------------------------------------------------------------
+
 with compute_tab:
     st.subheader("Computation dashboard: make the mechanics visible")
 
@@ -499,6 +504,7 @@ with compute_tab:
     )
 
     st.markdown("### Calculation trace")
+
     trace = {
         "R1 (kip)": res["R1_kip"],
         "R2 (kip)": res["R2_kip"],
@@ -513,24 +519,25 @@ with compute_tab:
         "sigma_aN at target life (ksi)": res["sigma_aN_ksi"],
         "predicted life at current d (cycles)": res["N_pred"],
     }
+
     st.dataframe(
         [{"Quantity": k, "Value": v} for k, v in trace.items()],
         hide_index=True,
         use_container_width=True,
     )
 
-# -----------------------------------------------------------------------------
-# JupyterLite code tab
-# -----------------------------------------------------------------------------
+
 with jlite_tab:
     st.subheader("JupyterLite-ready computation cell")
     st.write(
         "This is the direct link between the Streamlit AI coach and the browser-based computation. "
-        "Students can copy the current parameter state into JupyterLite, run the sweep, and return to the AI coach to explain the trend."
+        "Students can copy the current parameter state into JupyterLite, run the sweep, and return "
+        "to the AI coach to explain the trend."
     )
 
     code = make_jupyterlite_code(inp)
     st.code(code, language="python")
+
     st.download_button(
         "Download current JupyterLite code cell (.py)",
         data=code,
@@ -558,17 +565,17 @@ with jlite_tab:
 """
     )
 
-# -----------------------------------------------------------------------------
-# Solution access
-# -----------------------------------------------------------------------------
+
 with solution_tab:
     st.subheader("Instructor solution and AI explanation")
 
     if st.session_state.coach_count < UNLOCK_COUNT:
         st.warning(f"The solution is locked. Complete {UNLOCK_COUNT} AI coaching interactions first.")
         st.write("Students should first use prediction, computation, interpretation, and verification.")
+
     else:
         st.success("Solution unlocked.")
+
         if SOLUTION_FILE.exists():
             with open(SOLUTION_FILE, "rb") as f:
                 st.download_button(
@@ -581,6 +588,7 @@ with solution_tab:
             st.error("Instructor solution PDF was not found in the app folder.")
 
         solution_text = extract_solution_text()
+
         if solution_text:
             with st.expander("View extracted solution text"):
                 st.write(solution_text)
@@ -595,8 +603,10 @@ with solution_tab:
         )
 
         client = get_client()
+
         if client is None:
-            st.warning("AI solution explanation is disabled until OPENAI_API_KEY is added to Streamlit secrets.")
+            st.warning("AI solution explanation is disabled until GEMINI_API_KEY is added to Streamlit secrets.")
+
         elif st.button("Explain Instructor Solution", key="explain_solution"):
             prompt = f"""
 Instructor solution excerpt:
@@ -611,21 +621,22 @@ Current computed results:
 Student question:
 {student_question}
 """
-            with st.spinner("Explaining the instructor solution..."):
-                explanation = client.responses.create(
-                    model="gpt-4o-mini",
-                    instructions=SOLUTION_EXPLAINER_PROMPT,
-                    input=prompt,
-                )
-            st.markdown("### Explanation")
-            st.info(explanation.output_text)
 
-# -----------------------------------------------------------------------------
-# Concept review
-# -----------------------------------------------------------------------------
+            with st.spinner("Explaining the instructor solution..."):
+                try:
+                    explanation = ask_gemini(client, SOLUTION_EXPLAINER_PROMPT, prompt)
+                    st.markdown("### Explanation")
+                    st.info(explanation)
+                except Exception as e:
+                    st.error(f"Gemini API error: {e}")
+
+
 with concept_tab:
     st.subheader("Concept review: fatigue design of a rotating stepped shaft")
-    tab1, tab2, tab3, tab4 = st.tabs(["Critical section", "σa vs σm", "Marin factors", "Life and safety"])
+
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["Critical section", "σa vs σm", "Marin factors", "Life and safety"]
+    )
 
     with tab1:
         st.markdown(
@@ -687,6 +698,7 @@ A design may pass static yielding but fail fatigue.
 **Coaching question:** Why can ny be greater than 1 while nf is less than 1?
 """
         )
+
 
 st.markdown("---")
 st.caption("MEEN 368 Mechanics Coach | Computation as evidence, AI as interpretive scaffold")
