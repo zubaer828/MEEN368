@@ -1,8 +1,9 @@
 """
 TAMU MEEN 368: Stepped Shaft Fatigue Design Coach
 
-For Streamlit Community Cloud, add this in secrets:
-GEMINI_API_KEY = "your-gemini-api-key"
+Users must enter their own Gemini API key in the sidebar.
+Get a free key from:
+https://aistudio.google.com/apikey
 """
 
 from __future__ import annotations
@@ -267,7 +268,6 @@ print(f"nf = {{n_f:.3f}}, ny = {{n_y:.3f}}, nd = {{n_d:.3f}}")
 D = linspace(1.5, 3.2, 120)
 nd_list = []
 nf_list = []
-siga_list = []
 
 for d_i in D:
     r_i = r_over_d*d_i
@@ -279,7 +279,6 @@ for d_i in D:
     b_i = -(1/3)*log10(f*S_ut/Se_i)
     sigaN_i = a_i*N**b_i
 
-    siga_list.append(sigma_i)
     nf_list.append(Se_i/sigma_i)
     nd_list.append(sigaN_i/sigma_i)
 
@@ -295,11 +294,15 @@ plt.show()
 '''
 
 
-def get_client():
+def get_client(api_key: str):
     if genai is None:
         return None
+
+    if not api_key:
+        return None
+
     try:
-        return genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+        return genai.Client(api_key=api_key)
     except Exception:
         return None
 
@@ -340,6 +343,43 @@ if "coach_count" not in st.session_state:
 
 if "last_results" not in st.session_state:
     st.session_state.last_results = None
+
+if "gemini_api_key" not in st.session_state:
+    st.session_state.gemini_api_key = ""
+
+
+st.sidebar.header("Gemini API Key")
+
+st.sidebar.markdown(
+    """
+This app uses **your own Gemini API key**.
+
+1. Go to: https://aistudio.google.com/apikey  
+2. Create a free API key.  
+3. Paste it below.
+
+Your key is used only during this browser session.
+"""
+)
+
+api_key = st.sidebar.text_input(
+    "Enter your Gemini API key",
+    value=st.session_state.gemini_api_key,
+    type="password",
+)
+
+st.session_state.gemini_api_key = api_key
+
+client = get_client(api_key)
+
+if genai is None or types is None:
+    st.sidebar.error("google-genai is not installed. Check requirements.txt.")
+elif api_key and client is not None:
+    st.sidebar.success("Gemini connected.")
+elif api_key and client is None:
+    st.sidebar.error("Could not connect to Gemini. Check the API key.")
+else:
+    st.sidebar.warning("Enter a Gemini API key to enable AI coaching.")
 
 
 st.sidebar.header("Stepped shaft parameters")
@@ -395,6 +435,7 @@ coach_tab, compute_tab, jlite_tab, solution_tab, concept_tab = st.tabs(
 
 with coach_tab:
     st.subheader("AI-guided learning connected to current computed parameters")
+
     st.write(
         "Use the dashboard or sidebar to change the shaft parameters. Then ask the AI coach to "
         "help interpret the trend, identify assumptions, and propose verification checks."
@@ -425,10 +466,8 @@ with coach_tab:
 
         st.write(f"Coaching interactions used: **{st.session_state.coach_count}/{UNLOCK_COUNT}**")
 
-        client = get_client()
-
         if client is None:
-            st.warning("AI coaching is disabled until GEMINI_API_KEY is added to Streamlit secrets.")
+            st.warning("Enter your Gemini API key in the sidebar to enable AI coaching.")
         else:
             if st.button("Coach Me", key="coach_button"):
                 st.session_state.coach_count += 1
@@ -529,10 +568,10 @@ with compute_tab:
 
 with jlite_tab:
     st.subheader("JupyterLite-ready computation cell")
+
     st.write(
-        "This is the direct link between the Streamlit AI coach and the browser-based computation. "
-        "Students can copy the current parameter state into JupyterLite, run the sweep, and return "
-        "to the AI coach to explain the trend."
+        "Students can copy the current parameter state into JupyterLite, run the sweep, "
+        "and return to the AI coach to explain the trend."
     )
 
     code = make_jupyterlite_code(inp)
@@ -602,10 +641,8 @@ with solution_tab:
             height=100,
         )
 
-        client = get_client()
-
         if client is None:
-            st.warning("AI solution explanation is disabled until GEMINI_API_KEY is added to Streamlit secrets.")
+            st.warning("Enter your Gemini API key in the sidebar to enable AI explanation.")
 
         elif st.button("Explain Instructor Solution", key="explain_solution"):
             prompt = f"""
