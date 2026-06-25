@@ -348,7 +348,10 @@ if "gemini_api_key" not in st.session_state:
     st.session_state.gemini_api_key = ""
 
 
-st.sidebar.header("Gemini API Key")
+# -----------------------------------------------------------------------------
+# Sidebar: Gemini API key
+# -----------------------------------------------------------------------------
+st.sidebar.header("🔑 Gemini API Key")
 
 st.sidebar.markdown(
     """
@@ -358,9 +361,14 @@ This app uses **your own Gemini API key**.
 2. Create a free API key.  
 3. Paste it below.
 
-Your key is used only during this browser session.
+**Privacy Notice**
+
+Your Gemini API key is used only to communicate directly with Google's Gemini API during your current browser session.
+
+This application does **not** store, log, transmit, or share your API key with the app creator or any third party.
 """
 )
+
 
 api_key = st.sidebar.text_input(
     "Enter your Gemini API key",
@@ -427,6 +435,14 @@ st.session_state.last_results = res
 
 st.title("TAMU Mechanics: Stepped Shaft Fatigue Design Coach")
 st.caption("Close integration of JupyterLite-style computation and AI-guided learning")
+
+st.info(
+    """
+**Open Educational Resource**
+
+This AI Coach is freely available for educational use. Users supply their own free Gemini API key from Google AI Studio. The app does not store or share your API key.
+"""
+)
 
 coach_tab, compute_tab, jlite_tab, solution_tab, concept_tab = st.tabs(
     ["AI Coach", "Computation Dashboard", "JupyterLite Code", "Solution Access", "Concept Review"]
