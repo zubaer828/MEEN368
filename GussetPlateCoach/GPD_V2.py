@@ -4,15 +4,6 @@ TAMU MEEN 368: Gusset Plate Design Coach
 Users enter their own Gemini API key in the sidebar.
 Get a free key from:
 https://aistudio.google.com/apikey
-
-Required files in same folder:
-- GussetPlate.png
-- Solution.pdf
-
-requirements.txt:
-streamlit
-google-genai
-pypdf
 """
 
 from pathlib import Path
