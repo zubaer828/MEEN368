@@ -19,6 +19,11 @@ This AI Coach is freely available for educational use. Users supply their own fr
 """
 )
 
+st.caption(
+    "Developed by **Dr. Zubaer Hossain**, Texas A&M University  •  "
+    "Questions or comments: **zubaer@tamu.edu**"
+)
+
 st.write("""
 This app calculates the fatigue stress concentration factor, \(K_f\), using the notch sensitivity relation.
 Students can change material strength, notch radius, loading type, unit system, and static stress concentration factor.
