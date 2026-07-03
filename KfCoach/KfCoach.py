@@ -9,6 +9,38 @@ st.set_page_config(
     layout="wide"
 )
 
+# ----------------------------
+# Custom CSS
+# ----------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: 2.0rem;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+p, li {
+    font-size: 1.1rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.title("TAMU Mechanics: Fatigue Stress Concentration Factor Calculator")
 
 st.info(
