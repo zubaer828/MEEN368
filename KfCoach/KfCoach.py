@@ -71,7 +71,7 @@ This calculator is freely available for educational use.
 """)
 
 st.caption(
-    "Developed by **Dr. Zubaer Hossain**, Texas A&M University • "
+    "Developed by **Dr. Zubaer Hossain**, Department of Mechanical Engineering, Texas A&M University • "
     "Questions or comments: [zubaer@tamu.edu](mailto:zubaer@tamu.edu)"
 )
 
@@ -377,6 +377,5 @@ st.download_button(
 st.divider()
 
 st.caption(
-    "MEEN 368: Solid Mechanics in Mechanical Design | Department of Mechanical Engineering | "
-    "Texas A&M University"
+    "MEEN 368: Solid Mechanics in Mechanical Design | Texas A&M University | "
 )
