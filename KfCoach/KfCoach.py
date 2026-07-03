@@ -37,7 +37,7 @@ st.info(
     """
 **Open Educational Resource**
 
-This AI Coach is freely available for educational use. Users supply their own free Gemini API key from Google AI Studio. The app does not store or share your API key.
+This calculator is freely available for educational use.
 """
 )
 
@@ -50,80 +50,6 @@ st.write("""
 This app calculates the fatigue stress concentration factor, \(K_f\), using the notch sensitivity relation.
 Students can change material strength, notch radius, loading type, unit system, and static stress concentration factor.
 """)
-
-st.divider()
-
-st.header("Equations Used")
-
-st.write("The fatigue stress concentration factor is")
-
-st.latex(r"""
-K_f = 1 + \frac{K_t - 1}{1 + \sqrt{a/r}}
-""")
-
-st.write("The notch sensitivity factor is")
-
-st.latex(r"""
-q = \frac{K_f - 1}{K_t - 1}
-""")
-
-st.write("Therefore,")
-
-st.latex(r"""
-K_f = 1 + q(K_t - 1)
-""")
-
-st.subheader("Material parameter, \( \sqrt{a} \)")
-
-st.write("For bending or axial loading:")
-
-st.latex(r"""
-\sqrt{a}
-=
-0.246 - 3.08(10^{-3})S_{ut}
-+ 1.51(10^{-5})S_{ut}^{2}
-- 2.67(10^{-8})S_{ut}^{3}
-\qquad
-50 \le S_{ut} \le 250 \text{ kpsi}
-""")
-
-st.latex(r"""
-\sqrt{a}
-=
-1.24 - 2.25(10^{-3})S_{ut}
-+ 1.60(10^{-6})S_{ut}^{2}
-- 4.11(10^{-10})S_{ut}^{3}
-\qquad
-340 \le S_{ut} \le 1700 \text{ MPa}
-""")
-
-st.write("For torsion:")
-
-st.latex(r"""
-\sqrt{a}
-=
-0.190 - 2.51(10^{-3})S_{ut}
-+ 1.35(10^{-5})S_{ut}^{2}
-- 2.67(10^{-8})S_{ut}^{3}
-\qquad
-50 \le S_{ut} \le 220 \text{ kpsi}
-""")
-
-st.latex(r"""
-\sqrt{a}
-=
-0.958 - 1.83(10^{-3})S_{ut}
-+ 1.43(10^{-6})S_{ut}^{2}
-- 4.11(10^{-10})S_{ut}^{3}
-\qquad
-340 \le S_{ut} \le 1500 \text{ MPa}
-""")
-
-st.info(
-    "Here, \(K_t\) depends only on geometry and loading. "
-    "\(K_f\) accounts for the finite notch sensitivity of real materials. "
-    "Usually, \(K_f \\le K_t\)."
-)
 
 st.divider()
 
@@ -347,7 +273,79 @@ with col_plot2:
     st.pyplot(fig2)
 
 st.divider()
+st.header("Equations Used")
 
+st.write("The fatigue stress concentration factor is")
+
+st.latex(r"""
+K_f = 1 + \frac{K_t - 1}{1 + \sqrt{a/r}}
+""")
+
+st.write("The notch sensitivity factor is")
+
+st.latex(r"""
+q = \frac{K_f - 1}{K_t - 1}
+""")
+
+st.write("Therefore,")
+
+st.latex(r"""
+K_f = 1 + q(K_t - 1)
+""")
+
+st.subheader("Material parameter, \( \sqrt{a} \)")
+
+st.write("For bending or axial loading:")
+
+st.latex(r"""
+\sqrt{a}
+=
+0.246 - 3.08(10^{-3})S_{ut}
++ 1.51(10^{-5})S_{ut}^{2}
+- 2.67(10^{-8})S_{ut}^{3}
+\qquad
+50 \le S_{ut} \le 250 \text{ kpsi}
+""")
+
+st.latex(r"""
+\sqrt{a}
+=
+1.24 - 2.25(10^{-3})S_{ut}
++ 1.60(10^{-6})S_{ut}^{2}
+- 4.11(10^{-10})S_{ut}^{3}
+\qquad
+340 \le S_{ut} \le 1700 \text{ MPa}
+""")
+
+st.write("For torsion:")
+
+st.latex(r"""
+\sqrt{a}
+=
+0.190 - 2.51(10^{-3})S_{ut}
++ 1.35(10^{-5})S_{ut}^{2}
+- 2.67(10^{-8})S_{ut}^{3}
+\qquad
+50 \le S_{ut} \le 220 \text{ kpsi}
+""")
+
+st.latex(r"""
+\sqrt{a}
+=
+0.958 - 1.83(10^{-3})S_{ut}
++ 1.43(10^{-6})S_{ut}^{2}
+- 4.11(10^{-10})S_{ut}^{3}
+\qquad
+340 \le S_{ut} \le 1500 \text{ MPa}
+""")
+
+st.info(
+    "Here, \(K_t\) depends only on geometry and loading. "
+    "\(K_f\) accounts for the finite notch sensitivity of real materials. "
+    "Usually, \(K_f \\le K_t\)."
+)
+
+st.divider()
 st.header("Summary Table")
 
 summary_data = {
