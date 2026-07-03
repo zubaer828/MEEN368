@@ -9,11 +9,19 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("MEEN 368: Fatigue Stress Concentration Factor Coach")
+st.title("TAMU Mechanics: Fatigue Stress Concentration Factor Calculator")
+
+st.info(
+    """
+**Open Educational Resource**
+
+This AI Coach is freely available for educational use. Users supply their own free Gemini API key from Google AI Studio. The app does not store or share your API key.
+"""
+)
 
 st.write("""
 This app calculates the fatigue stress concentration factor, \(K_f\), using the notch sensitivity relation.
-Students can change material strength, notch radius, loading type, unit system, and theoretical stress concentration factor.
+Students can change material strength, notch radius, loading type, unit system, and static stress concentration factor.
 """)
 
 st.divider()
