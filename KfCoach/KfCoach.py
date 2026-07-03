@@ -377,6 +377,6 @@ st.download_button(
 st.divider()
 
 st.caption(
-    "MEEN 368: Solid Mechanics in Mechanical Design | Texas A&M University | "
-    "Questions/comments: zubaer@tamu.edu"
+    "MEEN 368: Solid Mechanics in Mechanical Design | Department of Mechanical Engineering | "
+    "Texas A&M University"
 )
