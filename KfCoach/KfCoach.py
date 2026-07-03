@@ -168,6 +168,81 @@ with result_col4:
 
 st.divider()
 
+# ----------------------------
+# Calculation details
+# ----------------------------
+st.header("Calculation Details")
+
+st.latex(
+    rf"""
+    K_f
+    =
+    1 + \frac{{{Kt:.3f} - 1}}{{1 + {sqrt_a:.4f}/\sqrt{{{r:.4f}}}}}
+    =
+    {Kf:.3f}
+    """
+)
+
+if q < 0.33:
+    interpretation = "The notch sensitivity is low."
+elif q < 0.67:
+    interpretation = "The notch sensitivity is moderate."
+else:
+    interpretation = "The notch sensitivity is high."
+
+st.write(
+    f"For the selected case, \(K_f = {Kf:.3f}\). "
+    f"The corresponding notch sensitivity is \(q = {q:.3f}\). "
+    f"{interpretation}"
+)
+
+st.divider()
+
+
+# ----------------------------
+# Plots
+# ----------------------------
+st.header("Plots")
+
+plot_col1, plot_col2 = st.columns(2)
+
+with plot_col1:
+    st.subheader("$K_f$ versus $S_{ut}$")
+
+    Sut_values = np.linspace(Sut_min, Sut_max, 300)
+    Kf_values_sut = [
+        calculate_kf(Kt, s, r, loading, unit)[0]
+        for s in Sut_values
+    ]
+
+    fig1, ax1 = plt.subplots(figsize=(6, 4))
+    ax1.plot(Sut_values, Kf_values_sut, linewidth=2)
+    ax1.scatter([Sut], [Kf], s=60)
+    ax1.set_xlabel(f"$S_{{ut}}$ ({unit})")
+    ax1.set_ylabel("$K_f$")
+    ax1.set_title("$K_f$ versus $S_{ut}$")
+    ax1.grid(True)
+    st.pyplot(fig1)
+
+with plot_col2:
+    st.subheader("$K_f$ versus notch radius, $r$")
+
+    r_values = np.linspace(r_min, r_max, 300)
+    Kf_values_r = [
+        calculate_kf(Kt, Sut, rr, loading, unit)[0]
+        for rr in r_values
+    ]
+
+    fig2, ax2 = plt.subplots(figsize=(6, 4))
+    ax2.plot(r_values, Kf_values_r, linewidth=2)
+    ax2.scatter([r], [Kf], s=60)
+    ax2.set_xlabel(f"$r$ ({r_unit})")
+    ax2.set_ylabel("$K_f$")
+    ax2.set_title("$K_f$ versus notch radius")
+    ax2.grid(True)
+    st.pyplot(fig2)
+
+st.divider()
 
 # ----------------------------
 # Equations
@@ -245,84 +320,6 @@ st.info(
 )
 
 st.divider()
-
-
-# ----------------------------
-# Calculation details
-# ----------------------------
-st.header("Calculation Details")
-
-st.latex(
-    rf"""
-    K_f
-    =
-    1 + \frac{{{Kt:.3f} - 1}}{{1 + {sqrt_a:.4f}/\sqrt{{{r:.4f}}}}}
-    =
-    {Kf:.3f}
-    """
-)
-
-if q < 0.33:
-    interpretation = "The notch sensitivity is low."
-elif q < 0.67:
-    interpretation = "The notch sensitivity is moderate."
-else:
-    interpretation = "The notch sensitivity is high."
-
-st.write(
-    f"For the selected case, \(K_f = {Kf:.3f}\). "
-    f"The corresponding notch sensitivity is \(q = {q:.3f}\). "
-    f"{interpretation}"
-)
-
-st.divider()
-
-
-# ----------------------------
-# Plots
-# ----------------------------
-st.header("Plots")
-
-plot_col1, plot_col2 = st.columns(2)
-
-with plot_col1:
-    st.subheader("$K_f$ versus $S_{ut}$")
-
-    Sut_values = np.linspace(Sut_min, Sut_max, 300)
-    Kf_values_sut = [
-        calculate_kf(Kt, s, r, loading, unit)[0]
-        for s in Sut_values
-    ]
-
-    fig1, ax1 = plt.subplots(figsize=(6, 4))
-    ax1.plot(Sut_values, Kf_values_sut, linewidth=2)
-    ax1.scatter([Sut], [Kf], s=60)
-    ax1.set_xlabel(f"$S_{{ut}}$ ({unit})")
-    ax1.set_ylabel("$K_f$")
-    ax1.set_title("$K_f$ versus $S_{ut}$")
-    ax1.grid(True)
-    st.pyplot(fig1)
-
-with plot_col2:
-    st.subheader("$K_f$ versus notch radius, $r$")
-
-    r_values = np.linspace(r_min, r_max, 300)
-    Kf_values_r = [
-        calculate_kf(Kt, Sut, rr, loading, unit)[0]
-        for rr in r_values
-    ]
-
-    fig2, ax2 = plt.subplots(figsize=(6, 4))
-    ax2.plot(r_values, Kf_values_r, linewidth=2)
-    ax2.scatter([r], [Kf], s=60)
-    ax2.set_xlabel(f"$r$ ({r_unit})")
-    ax2.set_ylabel("$K_f$")
-    ax2.set_title("$K_f$ versus notch radius")
-    ax2.grid(True)
-    st.pyplot(fig2)
-
-st.divider()
-
 
 # ----------------------------
 # Summary table and download
