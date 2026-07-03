@@ -152,6 +152,10 @@ r = st.slider(
 
 Kf, sqrt_a, q = calculate_kf(Kt, Sut, r, loading, unit)
 
+st.divider()
+
+st.header("Results")
+
 result_col1, result_col2, result_col3, result_col4 = st.columns(4)
 
 with result_col1:
