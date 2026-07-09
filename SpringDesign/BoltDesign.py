@@ -191,7 +191,18 @@ Try asking: Why does wire diameter affect stress so strongly? How do Fmax and Fm
 
 
 st.title("🌀 Spring Design AI Tutor")
-st.caption("Interactive equation explorer, parametric plots, what-if analysis, and AI tutoring for helical and conical compression springs.")
+
+st.caption(
+    "Interactive equation explorer, parametric plots, what-if analysis, and AI tutoring for helical and conical compression springs."
+    "Developed by **Dr. Zubaer Hossain**, Department of Mechanical Engineering, Texas A&M University • "
+    "Questions or comments: [zubaer@tamu.edu](mailto:zubaer@tamu.edu)"
+)
+
+st.info("""
+**Open Educational Resource**
+
+This calculator is freely available for educational use.
+""")
 
 with st.sidebar:
     st.header("Inputs")
