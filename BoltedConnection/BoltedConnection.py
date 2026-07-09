@@ -294,9 +294,27 @@ Try asking:
 - How does bolt diameter affect shear FOS?
 """
 
+# ----------------------------
+# Header
+# ----------------------------
+st.title("TAMU Mechanics: 🔩 Bolted Connection AI Tutor")
 
-st.title("🔩 Bolted Connection AI Tutor")
-st.caption("Interactive equation explorer, dependency map, what-if analysis, and context-aware tutoring.")
+st.caption(
+    "Interactive equation explorer, dependency map, what-if analysis, and context-aware tutoring."
+    "Developed by **Dr. Zubaer Hossain**, Department of Mechanical Engineering, Texas A&M University • "
+    "Questions or comments: [zubaer@tamu.edu](mailto:zubaer@tamu.edu)"
+)
+
+st.info("""
+**Open Educational Resource**
+
+This calculator is freely available for educational use.
+""")
+
+st.write("""
+This app calculates the fatigue stress concentration factor, \(K_f\), using the notch sensitivity relation. 
+Students can change material strength, notch radius, loading type, unit system, and static stress concentration factor.
+""")
 
 with st.sidebar:
     st.header("Inputs")
