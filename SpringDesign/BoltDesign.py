@@ -189,13 +189,11 @@ C = {fmt(r['C'])}, KB = {fmt(r['KB'])}, tau = {fmt(r['tau'])}, delta = {fmt(r['d
 Try asking: Why does wire diameter affect stress so strongly? How do Fmax and Fmin affect fatigue? How do I check stability?
 """
 
-
 st.title("🌀 Spring Design AI Tutor")
 
 st.caption(
     "Interactive equation explorer, parametric plots, what-if analysis, and AI tutoring for helical and conical compression springs • "
     "Developed by **Dr. Zubaer Hossain**, Department of Mechanical Engineering, Texas A&M University • "
-    "Questions or comments: [zubaer@tamu.edu](mailto:zubaer@tamu.edu)"
 )
 
 st.info("""
