@@ -201,7 +201,7 @@ st.caption(
 st.info("""
 **Open Educational Resource**
 
-This calculator is freely available for educational use.
+This calculator is freely available for educational use. Send questions or comments to [zubaer@tamu.edu](mailto:zubaer@tamu.edu)
 """)
 
 with st.sidebar:
