@@ -6,9 +6,9 @@ import pandas as pd
 import streamlit as st
 
 try:
-    from openai import OpenAI
+    from google import genai
 except Exception:
-    OpenAI = None
+    genai = None
 
 
 st.set_page_config(
@@ -131,20 +131,29 @@ n_bearing = Sy/[F/(dt)]
 
 def get_api_key():
     try:
-        if "OPENAI_API_KEY" in st.secrets:
-            return st.secrets["OPENAI_API_KEY"]
+        if "GEMINI_API_KEY" in st.secrets:
+            return st.secrets["GEMINI_API_KEY"]
     except Exception:
         pass
-    return os.getenv("OPENAI_API_KEY")
+    return os.getenv("GEMINI_API_KEY")
 
 
 def ask_ai(messages, context):
     api_key = get_api_key()
-    if not api_key or OpenAI is None:
+    if not api_key or genai is None:
         return None
 
-    client = OpenAI(api_key=api_key)
-    context_text = f"""
+    client = genai.Client(api_key=api_key)
+
+    conversation_text = ""
+    for m in messages:
+        role = m["role"]
+        content = m["content"]
+        conversation_text += f"{role.upper()}:\n{content}\n\n"
+
+    prompt = f"""
+{SYSTEM_PROMPT}
+
 Current app context:
 
 Inputs:
@@ -152,18 +161,19 @@ Inputs:
 
 Computed results:
 {context["results"]}
+
+Conversation:
+{conversation_text}
+
+Respond as a bolted-connection tutor.
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "system", "content": context_text},
-            *messages,
-        ],
-        temperature=0.4,
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
     )
-    return response.choices[0].message.content
+
+    return response.text
 
 
 def fallback_tutor_answer(question, x, r):
@@ -458,10 +468,10 @@ with tab4:
     st.header("AI Tutor")
 
     api_key = get_api_key()
-    if not api_key or OpenAI is None:
+    if not api_key or genai is None:
         st.warning(
             "AI is not connected yet. The app will use built-in tutoring responses. "
-            "To enable real AI chat, add OPENAI_API_KEY to Streamlit secrets."
+            "To enable real AI chat, add GEMINI_API_KEY to Streamlit secrets."
         )
 
     if "messages" not in st.session_state:
