@@ -1,5 +1,6 @@
 import os
 import math
+import plotly.express as px
 from dataclasses import dataclass, asdict
 
 import pandas as pd
@@ -331,8 +332,15 @@ x = JointInputs(
 )
 r = compute(x)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["Equation Explorer", "Dependency Map", "What-if Analysis", "AI Tutor", "Worked Example"]
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+    [
+        "Equation Explorer",
+        "Dependency Map",
+        "What-if Analysis",
+        "Parametric Plots",
+        "AI Tutor",
+        "Worked Example",
+    ]
 )
 
 with tab1:
@@ -465,6 +473,153 @@ with tab3:
         st.info("Increasing diameter strongly improves shear capacity because shear area scales with d².")
 
 with tab4:
+    st.header("Parametric Plots")
+
+    st.write(
+        "Use this section to visualize how changing one design parameter affects "
+        "load sharing, bolt load, separation, proof safety factor, and fatigue safety factor."
+    )
+
+    sweep_var = st.selectbox(
+        "Parameter to vary",
+        ["km", "kb", "Fi", "P", "At", "d", "Pmax", "Pmin"],
+        key="sweep_var",
+    )
+
+    base_value = getattr(x, sweep_var)
+
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        min_factor = st.number_input(
+            "Minimum multiplier",
+            value=0.25,
+            min_value=0.01,
+            max_value=10.0,
+            step=0.05,
+        )
+
+    with col_b:
+        max_factor = st.number_input(
+            "Maximum multiplier",
+            value=3.0,
+            min_value=0.01,
+            max_value=10.0,
+            step=0.05,
+        )
+
+    n_points = st.slider("Number of points", 10, 200, 80)
+
+    factors = [
+        min_factor + i * (max_factor - min_factor) / (n_points - 1)
+        for i in range(n_points)
+    ]
+
+    rows = []
+
+    for factor in factors:
+        x_sweep = JointInputs(**asdict(x))
+        setattr(x_sweep, sweep_var, base_value * factor)
+
+        r_sweep = compute(x_sweep)
+
+        rows.append(
+            {
+                sweep_var: base_value * factor,
+                "Multiplier": factor,
+                "C": r_sweep["C"],
+                "Fb": r_sweep["Fb"],
+                "Fm": r_sweep["Fm"],
+                "np": r_sweep["np"],
+                "n0": r_sweep["n0"],
+                "sigma_i": r_sweep["sigma_i"],
+                "sigma_a": r_sweep["sigma_a"],
+                "sigma_m": r_sweep["sigma_m"],
+                "nf": r_sweep["nf"],
+                "n_shear": r_sweep["n_shear"],
+                "n_bearing_bolt": r_sweep["n_bearing_bolt"],
+                "n_bearing_member": r_sweep["n_bearing_member"],
+            }
+        )
+
+    df_sweep = pd.DataFrame(rows)
+
+    output = st.selectbox(
+        "Output to plot",
+        [
+            "C",
+            "Fb",
+            "Fm",
+            "np",
+            "n0",
+            "sigma_i",
+            "sigma_a",
+            "sigma_m",
+            "nf",
+            "n_shear",
+            "n_bearing_bolt",
+            "n_bearing_member",
+        ],
+    )
+
+    fig = px.line(
+        df_sweep,
+        x=sweep_var,
+        y=output,
+        markers=True,
+        title=f"Effect of changing {sweep_var} on {output}",
+    )
+
+    fig.update_layout(
+        xaxis_title=sweep_var,
+        yaxis_title=output,
+        hovermode="x unified",
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.subheader("Design interpretation")
+
+    if sweep_var == "km":
+        st.info(
+            "As member stiffness km increases, the load fraction C usually decreases. "
+            "This means the bolt takes a smaller portion of the external load increment."
+        )
+
+    elif sweep_var == "kb":
+        st.info(
+            "As bolt stiffness kb increases, the load fraction C usually increases. "
+            "The bolt attracts more of the external load increment."
+        )
+
+    elif sweep_var == "Fi":
+        st.info(
+            "Increasing preload usually improves separation resistance n0, "
+            "but it also increases initial bolt stress."
+        )
+
+    elif sweep_var == "At":
+        st.info(
+            "Increasing tensile stress area At reduces bolt stresses and generally "
+            "improves static and fatigue safety factors."
+        )
+
+    elif sweep_var == "d":
+        st.info(
+            "Increasing bolt diameter strongly improves shear resistance because "
+            "the shear area scales with d²."
+        )
+
+    elif sweep_var in ["P", "Pmax", "Pmin"]:
+        st.info(
+            "Changing the external load changes bolt load, separation resistance, "
+            "and fatigue response. Fatigue is especially sensitive to the load range."
+        )
+
+    st.subheader("Sweep data")
+    st.dataframe(df_sweep, use_container_width=True)
+    
+with tab5:
     st.header("AI Tutor")
 
     api_key = get_api_key()
@@ -516,7 +671,7 @@ with tab4:
 
         st.session_state.messages.append({"role": "assistant", "content": ai_answer})
 
-with tab5:
+with tab6:
     st.header("Worked Example: Guided Solution")
 
     step = st.radio(
