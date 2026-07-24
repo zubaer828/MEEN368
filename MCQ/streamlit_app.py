@@ -238,9 +238,11 @@ def main() -> None:
         page_title="MEEN 368 MCQ Practice",
         page_icon="📚",
         layout="wide",
+        initial_sidebar_state="collapsed",
     )
 
     st.title("MEEN 368 MCQ Practice")
+
     st.write(
         "Select a topic, generate a randomized quiz, and review "
         "the answers and explanations."
@@ -253,17 +255,24 @@ def main() -> None:
         st.stop()
 
     section_titles = [
-        f"{section['section_id']}. {section['title']}"
+        f"{section['section_id']}. {section['title']} "
+        f"({len(section['questions'])} questions)"
         for section in sections
     ]
 
-    selected_title = st.sidebar.radio(
-        "Select a section",
+    st.subheader("Select a Section")
+
+    selected_title = st.radio(
+        label="Choose a topic",
         options=section_titles,
+        label_visibility="collapsed",
+        key="section_selector",
     )
 
     selected_index = section_titles.index(selected_title)
     selected_section = sections[selected_index]
+
+    st.markdown("---")
 
     display_section(selected_section)
 
