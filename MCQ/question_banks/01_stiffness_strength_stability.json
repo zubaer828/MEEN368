@@ -1,23 +1,708 @@
 {
   "section_id": "01",
   "title": "Stiffness, Strength, and Stability",
-  "description": "Questions covering stiffness, strength, serviceability, and structural stability.",
+  "description": "Practice questions on stiffness, strength, serviceability, structural efficiency, vibration, and stability.",
   "questions": [
     {
       "id": "SSS-001",
-      "question": "When a design is limited by stiffness rather than strength, which material property is the primary driver?",
+      "question": "When a design is limited by stiffness rather than strength, which material property is the primary driver for material selection?",
       "choices": {
-        "A": "Yield strength",
-        "B": "Ultimate tensile strength",
-        "C": "Young's modulus",
-        "D": "Ductility"
+        "A": "Yield strength (Sy)",
+        "B": "Ultimate tensile strength (Sut)",
+        "C": "Young's modulus (E)",
+        "D": "Ductility (percent elongation)"
       },
       "answer": "C",
-      "explanation": "Young's modulus governs elastic deformation and is therefore the primary material property in a stiffness-limited design.",
+      "explanation": "Stiffness is resistance to elastic deformation. Young's modulus governs elastic strain and deflection, whereas yield and ultimate strengths govern failure limits.",
       "difficulty": "Basic",
       "tags": [
         "stiffness",
         "material properties"
+      ]
+    },
+    {
+      "id": "SSS-002",
+      "question": "For a long, slender column under axial compression, a stability failure occurs when:",
+      "choices": {
+        "A": "The internal stress exceeds the yield strength.",
+        "B": "A small disturbance produces large unintended displacements.",
+        "C": "The part permanently deforms without fracture.",
+        "D": "The vibration frequency equals the natural frequency."
+      },
+      "answer": "B",
+      "explanation": "Stability concerns the ability of an equilibrium configuration to recover after a small disturbance. Buckling is the common example.",
+      "difficulty": "Basic",
+      "tags": [
+        "stability",
+        "buckling"
+      ]
+    },
+    {
+      "id": "SSS-003",
+      "question": "A precision optical bench must not deflect more than 1 micron under its own weight. This is primarily a requirement for:",
+      "choices": {
+        "A": "Strength",
+        "B": "Stiffness",
+        "C": "Stability",
+        "D": "Toughness"
+      },
+      "answer": "B",
+      "explanation": "The component is not necessarily yielding or buckling; it is limited by allowable elastic deformation, which is a stiffness or serviceability requirement.",
+      "difficulty": "Basic",
+      "tags": [
+        "stiffness",
+        "serviceability"
+      ]
+    },
+    {
+      "id": "SSS-004",
+      "question": "If a beam material is changed from low-carbon steel to a high-strength heat-treated alloy steel, how does the beam stiffness change if the geometry remains unchanged?",
+      "choices": {
+        "A": "It increases significantly because yield strength is higher.",
+        "B": "It remains essentially unchanged because Young's modulus is nearly the same.",
+        "C": "It decreases because higher-strength materials are usually more brittle.",
+        "D": "It depends on the factor of safety."
+      },
+      "answer": "B",
+      "explanation": "Heat treatment can substantially increase strength, but it has little effect on Young's modulus. Therefore, beams of the same geometry made from common steels have nearly the same elastic deflection.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "stiffness",
+        "steel",
+        "Young's modulus"
+      ]
+    },
+    {
+      "id": "SSS-005",
+      "question": "A thin-walled cylinder under external pressure collapses inward while its hoop stress is well below yield. This is a failure in:",
+      "choices": {
+        "A": "Strength",
+        "B": "Stiffness",
+        "C": "Stability (buckling)",
+        "D": "Fatigue"
+      },
+      "answer": "C",
+      "explanation": "Thin-walled shells can lose geometric stability and collapse at stresses far below the material yield strength.",
+      "difficulty": "Basic",
+      "tags": [
+        "stability",
+        "shell buckling"
+      ]
+    },
+    {
+      "id": "SSS-006",
+      "question": "Which change increases bending stiffness through geometry without changing material volume?",
+      "choices": {
+        "A": "Use a solid shaft instead of a hollow shaft of the same weight.",
+        "B": "Increase the depth of an I-beam while reducing flange thickness.",
+        "C": "Polish the surface to remove stress risers.",
+        "D": "Use a material with a higher yield strength."
+      },
+      "answer": "B",
+      "explanation": "Bending stiffness depends on EI. Redistributing material farther from the neutral axis increases the area moment of inertia without necessarily adding material.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "stiffness",
+        "geometry",
+        "moment of inertia"
+      ]
+    },
+    {
+      "id": "SSS-007",
+      "question": "A bridge is strong enough not to collapse but sways excessively in the wind and makes pedestrians uncomfortable. Which design criterion has failed?",
+      "choices": {
+        "A": "Ultimate strength",
+        "B": "Geometric stability",
+        "C": "Stiffness (serviceability)",
+        "D": "Creep"
+      },
+      "answer": "C",
+      "explanation": "Excessive elastic motion or vibration is a serviceability problem associated with insufficient stiffness.",
+      "difficulty": "Basic",
+      "tags": [
+        "stiffness",
+        "serviceability",
+        "vibration"
+      ]
+    },
+    {
+      "id": "SSS-008",
+      "question": "For an elastic Euler column, the critical buckling load is independent of:",
+      "choices": {
+        "A": "Column length",
+        "B": "Area moment of inertia",
+        "C": "Material yield strength",
+        "D": "End-fixity conditions"
+      },
+      "answer": "C",
+      "explanation": "Euler buckling depends on E, I, effective length, and end conditions. Yield strength does not appear as long as buckling remains elastic.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "Euler buckling",
+        "stability"
+      ]
+    },
+    {
+      "id": "SSS-009",
+      "question": "In design for strength, the primary objective is to ensure that:",
+      "choices": {
+        "A": "The part does not vibrate.",
+        "B": "Maximum stress remains below the allowable stress.",
+        "C": "Deflection remains below L/360.",
+        "D": "The Euler load is not exceeded."
+      },
+      "answer": "B",
+      "explanation": "Strength design compares stress demand with an allowable material strength, usually including a factor of safety.",
+      "difficulty": "Basic",
+      "tags": [
+        "strength",
+        "allowable stress"
+      ]
+    },
+    {
+      "id": "SSS-010",
+      "question": "Which failure mode is characterized by a bifurcation point in the load-deflection curve?",
+      "choices": {
+        "A": "Yielding",
+        "B": "Ductile fracture",
+        "C": "Buckling",
+        "D": "Ordinary elastic deflection"
+      },
+      "answer": "C",
+      "explanation": "At the critical load, a perfectly straight configuration can lose stability and branch into a buckled equilibrium path.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "buckling",
+        "bifurcation"
+      ]
+    },
+    {
+      "id": "SSS-011",
+      "question": "If the span of a simply supported beam is doubled while the load and cross-section remain unchanged, its bending stiffness decreases by approximately what factor?",
+      "choices": {
+        "A": "2",
+        "B": "4",
+        "C": "8",
+        "D": "16"
+      },
+      "answer": "C",
+      "explanation": "For common simply supported beam loading, deflection scales with L^3. Since stiffness is load divided by deflection, stiffness scales with 1/L^3.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "beam deflection",
+        "stiffness scaling"
+      ]
+    },
+    {
+      "id": "SSS-012",
+      "question": "A material has a high strength-to-weight ratio but a low stiffness-to-weight ratio. It is most likely:",
+      "choices": {
+        "A": "Steel",
+        "B": "Tungsten",
+        "C": "Certain polymers or composites",
+        "D": "Aluminum"
+      },
+      "answer": "C",
+      "explanation": "Some polymers and composites can carry relatively high stress for their weight while still having a comparatively low elastic modulus.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "materials",
+        "specific strength",
+        "specific stiffness"
+      ]
+    },
+    {
+      "id": "SSS-013",
+      "question": "Notch sensitivity is important in design for _____ but is usually negligible in design for _____.",
+      "choices": {
+        "A": "stability; strength",
+        "B": "fatigue strength; stiffness",
+        "C": "stiffness; stability",
+        "D": "stability; stiffness"
+      },
+      "answer": "B",
+      "explanation": "Notches amplify local stress and strongly affect fatigue crack initiation, but a small notch usually has little effect on the global section stiffness.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "notch sensitivity",
+        "fatigue",
+        "stiffness"
+      ]
+    },
+    {
+      "id": "SSS-014",
+      "question": "Why does a fixed-fixed column have a higher critical buckling load than a pinned-pinned column of the same material and geometry?",
+      "choices": {
+        "A": "It has a higher yield strength.",
+        "B": "Its effective length is shorter.",
+        "C": "Its Young's modulus increases because of the restraints.",
+        "D": "Its internal stresses are always lower."
+      },
+      "answer": "B",
+      "explanation": "End restraints reduce the effective buckling length, and the Euler critical load varies inversely with the square of effective length.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "columns",
+        "effective length",
+        "buckling"
+      ]
+    },
+    {
+      "id": "SSS-015",
+      "question": "Why is stiffness important in the design of a high-speed rotating shaft?",
+      "choices": {
+        "A": "It directly sets the torque at yielding.",
+        "B": "It influences the critical speeds and natural frequencies.",
+        "C": "It determines bearing fatigue life by itself.",
+        "D": "It controls corrosion resistance."
+      },
+      "answer": "B",
+      "explanation": "Shaft stiffness affects the system's natural frequencies. Operation near a critical speed can produce severe whirling and vibration.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "shaft",
+        "critical speed",
+        "dynamic stiffness"
+      ]
+    },
+    {
+      "id": "SSS-016",
+      "question": "A short column usually fails by _____, whereas a long slender column usually fails by _____.",
+      "choices": {
+        "A": "stiffness; strength",
+        "B": "yielding; buckling",
+        "C": "buckling; yielding",
+        "D": "fatigue; creep"
+      },
+      "answer": "B",
+      "explanation": "Stocky columns tend to reach material strength limits, while slender columns are governed by elastic or inelastic buckling.",
+      "difficulty": "Basic",
+      "tags": [
+        "columns",
+        "yielding",
+        "buckling"
+      ]
+    },
+    {
+      "id": "SSS-017",
+      "question": "Flexural rigidity is defined as:",
+      "choices": {
+        "A": "Sy I",
+        "B": "EA",
+        "C": "EI",
+        "D": "GJ"
+      },
+      "answer": "C",
+      "explanation": "Flexural rigidity combines the material modulus E and the cross-sectional bending property I.",
+      "difficulty": "Basic",
+      "tags": [
+        "flexural rigidity",
+        "EI"
+      ]
+    },
+    {
+      "id": "SSS-018",
+      "question": "Why is aeroelasticity a concern in aircraft-wing design?",
+      "choices": {
+        "A": "It involves interaction between aerodynamic loading and structural stiffness that can cause flutter.",
+        "B": "It concerns only the weight of the wing.",
+        "C": "It ensures the wing is strong enough to support the engines.",
+        "D": "It is concerned only with surface finish."
+      },
+      "answer": "A",
+      "explanation": "Aeroelastic flutter is a dynamic instability caused by interaction among aerodynamic forces, structural stiffness, inertia, and damping.",
+      "difficulty": "Advanced",
+      "tags": [
+        "aeroelasticity",
+        "flutter",
+        "dynamic stability"
+      ]
+    },
+    {
+      "id": "SSS-019",
+      "question": "For a statically indeterminate structure, calculation of the reactions requires knowledge of the structure's:",
+      "choices": {
+        "A": "Ultimate strength",
+        "B": "Deformation and stiffness characteristics",
+        "C": "Stability limit only",
+        "D": "Surface hardness"
+      },
+      "answer": "B",
+      "explanation": "Equilibrium alone is insufficient. Compatibility equations and force-deformation relations are needed.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "indeterminate structures",
+        "compatibility",
+        "stiffness"
+      ]
+    },
+    {
+      "id": "SSS-020",
+      "question": "Which statement is false?",
+      "choices": {
+        "A": "A part can be strong enough but not stiff enough.",
+        "B": "A part can be stiff enough but not strong enough.",
+        "C": "A part that buckles must have reached its yield strength.",
+        "D": "Geometry strongly influences stiffness and stability."
+      },
+      "answer": "C",
+      "explanation": "A sufficiently slender member can buckle elastically at a stress below yield.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "strength",
+        "stiffness",
+        "buckling"
+      ]
+    },
+    {
+      "id": "SSS-021",
+      "question": "Two beams have identical bending stiffness but different strengths. Which statement is consistent with this observation?",
+      "choices": {
+        "A": "They must use the same material but different geometries.",
+        "B": "They may use different materials or geometries but have the same EI.",
+        "C": "They must have identical yield strength.",
+        "D": "They must have identical cross-sectional area."
+      },
+      "answer": "B",
+      "explanation": "Bending stiffness is governed by EI. Different combinations of E and I can yield the same stiffness while strength remains different.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "EI",
+        "strength",
+        "stiffness"
+      ]
+    },
+    {
+      "id": "SSS-022",
+      "question": "A design is limited by deflection under variable loading. Which consideration becomes especially important?",
+      "choices": {
+        "A": "Ultimate strength",
+        "B": "Fatigue strength only",
+        "C": "Dynamic stiffness",
+        "D": "Hardness"
+      },
+      "answer": "C",
+      "explanation": "Under variable loading, stiffness affects vibration, resonance, and dynamic amplification in addition to static deflection.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "dynamic stiffness",
+        "variable loading"
+      ]
+    },
+    {
+      "id": "SSS-023",
+      "question": "Why does increasing the depth of a beam improve bending stiffness more effectively than increasing its width?",
+      "choices": {
+        "A": "Area increases linearly.",
+        "B": "The area moment of inertia scales nonlinearly with depth.",
+        "C": "The material becomes stronger.",
+        "D": "The applied load decreases."
+      },
+      "answer": "B",
+      "explanation": "For a rectangular section, I = bh^3/12, so depth has a cubic influence while width has a linear influence.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "beam geometry",
+        "moment of inertia"
+      ]
+    },
+    {
+      "id": "SSS-024",
+      "question": "A structure undergoes a large deformation but returns to its original shape after unloading. This most directly indicates:",
+      "choices": {
+        "A": "Strength failure",
+        "B": "Permanent stiffness failure",
+        "C": "Elastic behavior with low stiffness",
+        "D": "Instability failure"
+      },
+      "answer": "C",
+      "explanation": "Full recovery indicates elastic behavior. The large deformation suggests insufficient stiffness for the intended service requirement.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "elastic deformation",
+        "stiffness"
+      ]
+    },
+    {
+      "id": "SSS-025",
+      "question": "Why is increasing material strength often ineffective for improving the elastic buckling resistance of a slender member?",
+      "choices": {
+        "A": "Buckling depends primarily on geometry and elastic stiffness.",
+        "B": "Strength reduces stiffness.",
+        "C": "Strength always increases weight.",
+        "D": "Buckling occurs only in plastics."
+      },
+      "answer": "A",
+      "explanation": "Elastic buckling load is governed by EI and effective length, not directly by yield strength.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "buckling",
+        "material strength",
+        "geometry"
+      ]
+    },
+    {
+      "id": "SSS-026",
+      "question": "Why is stiffness often more restrictive than strength in lightweight design?",
+      "choices": {
+        "A": "Strength is always low.",
+        "B": "Deflection limits can be reached before stress limits.",
+        "C": "Stability is irrelevant.",
+        "D": "Lightweight materials cannot carry load."
+      },
+      "answer": "B",
+      "explanation": "In many lightweight structures, stress is acceptable while deflection, vibration, or alignment requirements govern the design.",
+      "difficulty": "Basic",
+      "tags": [
+        "lightweight design",
+        "serviceability"
+      ]
+    },
+    {
+      "id": "SSS-027",
+      "question": "Which design change can improve bending stiffness without increasing mass?",
+      "choices": {
+        "A": "Switch to a higher-density material.",
+        "B": "Redistribute material farther from the neutral axis.",
+        "C": "Increase the applied load.",
+        "D": "Reduce material modulus."
+      },
+      "answer": "B",
+      "explanation": "Moving material away from the neutral axis increases I and therefore EI without necessarily adding mass.",
+      "difficulty": "Basic",
+      "tags": [
+        "structural efficiency",
+        "moment of inertia"
+      ]
+    },
+    {
+      "id": "SSS-028",
+      "question": "A column is shortened while all other properties remain unchanged. Which behavior improves most strongly?",
+      "choices": {
+        "A": "Material strength",
+        "B": "Surface hardness",
+        "C": "Stability",
+        "D": "Toughness"
+      },
+      "answer": "C",
+      "explanation": "Euler buckling load scales with 1/L^2, so reducing length strongly increases resistance to buckling.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "columns",
+        "length effect",
+        "stability"
+      ]
+    },
+    {
+      "id": "SSS-029",
+      "question": "Why are thin-walled structural sections often efficient for bending stiffness?",
+      "choices": {
+        "A": "They increase material density.",
+        "B": "They place material far from the neutral axis.",
+        "C": "They reduce Young's modulus.",
+        "D": "They always reduce stress to zero."
+      },
+      "answer": "B",
+      "explanation": "Thin-walled sections can achieve a large moment of inertia by distributing material far from the centroid with relatively little mass.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "thin-walled structures",
+        "stiffness",
+        "efficiency"
+      ]
+    },
+    {
+      "id": "SSS-030",
+      "question": "What is the principal trade-off when stiffness is increased simply by adding material?",
+      "choices": {
+        "A": "Reduced strength",
+        "B": "Increased weight",
+        "C": "Reduced stability",
+        "D": "Lower Young's modulus"
+      },
+      "answer": "B",
+      "explanation": "Adding material generally increases stiffness but also increases mass, which may be undesirable in transportation and aerospace applications.",
+      "difficulty": "Basic",
+      "tags": [
+        "design trade-off",
+        "weight",
+        "stiffness"
+      ]
+    },
+    {
+      "id": "SSS-031",
+      "question": "A structure designed only to satisfy stiffness requirements may still fail because of:",
+      "choices": {
+        "A": "Excessive elastic deformation",
+        "B": "Yielding or fracture",
+        "C": "A reduction in modulus caused by calculation",
+        "D": "Low density alone"
+      },
+      "answer": "B",
+      "explanation": "Adequate stiffness does not guarantee adequate strength. Stress must also remain below applicable material limits.",
+      "difficulty": "Basic",
+      "tags": [
+        "strength",
+        "stiffness",
+        "design criteria"
+      ]
+    },
+    {
+      "id": "SSS-032",
+      "question": "Why do ribs improve the stiffness of a panel?",
+      "choices": {
+        "A": "They increase the material's yield strength.",
+        "B": "They increase the effective moment of inertia with relatively little added mass.",
+        "C": "They reduce the applied load.",
+        "D": "They change the material's Young's modulus."
+      },
+      "answer": "B",
+      "explanation": "Ribs redistribute material away from the neutral surface and increase geometric stiffness efficiently.",
+      "difficulty": "Basic",
+      "tags": [
+        "ribs",
+        "panels",
+        "moment of inertia"
+      ]
+    },
+    {
+      "id": "SSS-033",
+      "question": "Which scenario most clearly indicates a stability-driven failure rather than a strength-driven failure?",
+      "choices": {
+        "A": "Crack propagation",
+        "B": "Sudden lateral deflection under compressive load",
+        "C": "Permanent plastic deformation",
+        "D": "Surface wear"
+      },
+      "answer": "B",
+      "explanation": "Sudden lateral deflection under compression is characteristic of buckling, a loss of structural stability.",
+      "difficulty": "Basic",
+      "tags": [
+        "stability",
+        "buckling"
+      ]
+    },
+    {
+      "id": "SSS-034",
+      "question": "Why are boundary conditions critical in a stability analysis?",
+      "choices": {
+        "A": "They change material strength.",
+        "B": "They alter effective length, deformation modes, and buckling behavior.",
+        "C": "They alter material density.",
+        "D": "They always change the applied load magnitude."
+      },
+      "answer": "B",
+      "explanation": "Support restraints determine admissible buckling shapes and effective length, which directly influence critical load.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "boundary conditions",
+        "buckling",
+        "effective length"
+      ]
+    },
+    {
+      "id": "SSS-035",
+      "question": "A component has acceptable stress but excessive vibration. This most directly indicates:",
+      "choices": {
+        "A": "Strength failure",
+        "B": "A stiffness deficiency",
+        "C": "Material yielding",
+        "D": "A material defect"
+      },
+      "answer": "B",
+      "explanation": "Low dynamic stiffness can lead to resonance or excessive vibration even when stress remains acceptable.",
+      "difficulty": "Basic",
+      "tags": [
+        "vibration",
+        "dynamic stiffness"
+      ]
+    },
+    {
+      "id": "SSS-036",
+      "question": "Why is simply increasing cross-sectional area not always the most efficient way to improve bending stiffness?",
+      "choices": {
+        "A": "Area always increases density.",
+        "B": "The added material may not be placed where it efficiently increases the moment of inertia.",
+        "C": "Increasing area reduces strength.",
+        "D": "Increasing area changes Young's modulus."
+      },
+      "answer": "B",
+      "explanation": "Bending stiffness depends not only on material quantity but also on how far that material is located from the neutral axis.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "cross-section",
+        "moment of inertia",
+        "efficiency"
+      ]
+    },
+    {
+      "id": "SSS-037",
+      "question": "Why is the load path important in stiffness design?",
+      "choices": {
+        "A": "It determines the material yield strength.",
+        "B": "It affects how forces and deformation are distributed through the structure.",
+        "C": "It changes material density.",
+        "D": "It automatically reduces weight."
+      },
+      "answer": "B",
+      "explanation": "A direct and efficient load path limits localized bending and deformation, whereas a poor load path can create flexible regions.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "load path",
+        "structural stiffness"
+      ]
+    },
+    {
+      "id": "SSS-038",
+      "question": "Why are arches efficient structural forms?",
+      "choices": {
+        "A": "They maximize bending.",
+        "B": "They convert much of the loading into axial compression.",
+        "C": "They reduce structural stiffness.",
+        "D": "They increase weight."
+      },
+      "answer": "B",
+      "explanation": "Arches carry loads largely through compression, reducing bending moments and improving structural efficiency.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "arches",
+        "load path",
+        "compression"
+      ]
+    },
+    {
+      "id": "SSS-039",
+      "question": "How does local buckling differ from global buckling?",
+      "choices": {
+        "A": "It depends only on material strength.",
+        "B": "It occurs in localized thin elements or regions.",
+        "C": "It always requires a higher load.",
+        "D": "It is unrelated to geometry."
+      },
+      "answer": "B",
+      "explanation": "Local buckling involves individual plates, flanges, webs, or shell regions, whereas global buckling involves the member or structure as a whole.",
+      "difficulty": "Intermediate",
+      "tags": [
+        "local buckling",
+        "global buckling",
+        "thin-walled"
+      ]
+    },
+    {
+      "id": "SSS-040",
+      "question": "A design must satisfy stiffness, strength, and stability simultaneously. Which requirement governs the final design?",
+      "choices": {
+        "A": "The requirement with the highest numerical factor of safety",
+        "B": "The most restrictive requirement",
+        "C": "The material with the highest modulus",
+        "D": "The lowest applied load case"
+      },
+      "answer": "B",
+      "explanation": "All criteria must be satisfied, but the limiting or most restrictive criterion controls the final dimensions and material choice.",
+      "difficulty": "Basic",
+      "tags": [
+        "design criteria",
+        "governing requirement"
       ]
     }
   ]
