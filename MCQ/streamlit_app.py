@@ -252,16 +252,20 @@ def main() -> None:
         st.error("No valid question-bank files were found.")
         st.stop()
 
-    tab_titles = [
+    section_titles = [
         f"{section['section_id']}. {section['title']}"
         for section in sections
     ]
 
-    tabs = st.tabs(tab_titles)
+    selected_title = st.sidebar.radio(
+        "Select a section",
+        options=section_titles,
+    )
 
-    for tab, section in zip(tabs, sections):
-        with tab:
-            display_section(section)
+    selected_index = section_titles.index(selected_title)
+    selected_section = sections[selected_index]
+
+    display_section(selected_section)
 
 
 if __name__ == "__main__":
