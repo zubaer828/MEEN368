@@ -1,0 +1,24 @@
+{
+  "section_id": "01",
+  "title": "Stiffness, Strength, and Stability",
+  "description": "Questions covering stiffness, strength, serviceability, and structural stability.",
+  "questions": [
+    {
+      "id": "SSS-001",
+      "question": "When a design is limited by stiffness rather than strength, which material property is the primary driver?",
+      "choices": {
+        "A": "Yield strength",
+        "B": "Ultimate tensile strength",
+        "C": "Young's modulus",
+        "D": "Ductility"
+      },
+      "answer": "C",
+      "explanation": "Young's modulus governs elastic deformation and is therefore the primary material property in a stiffness-limited design.",
+      "difficulty": "Basic",
+      "tags": [
+        "stiffness",
+        "material properties"
+      ]
+    }
+  ]
+}
