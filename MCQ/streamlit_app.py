@@ -8,7 +8,8 @@ from typing import Any
 import streamlit as st
 
 
-QUESTION_BANK_FOLDER = Path("question_banks")
+APP_FOLDER = Path(__file__).resolve().parent
+QUESTION_BANK_FOLDER = APP_FOLDER / "question_banks"
 
 
 def load_sections(folder: Path) -> list[dict[str, Any]]:
